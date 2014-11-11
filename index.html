@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<!-- This line forces latest IE rendering engine (even in intranet) & Chrome Frame  -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+		<title>Unboxed Consulting Challenge</title>
+		<meta name="description" content="">
+		<meta name="author" content="Ashahmali">
+
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+		<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+
+
+		<style>
+			.main_cont{max-width:35em;}
+			h3.sandbox_title{margin: 0 0 1em;padding: 1em 0 .5em;border-bottom: .1em solid #eee;}
+			.feedback{margin:1em 0;}
+			.bg-success, .bg-danger, .bg-info{padding:1em;}
+			.exer_img{height:88px; background:url(exbg.gif) repeat-x; -webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; padding:1.5em 0;}
+			span.h_at {color: #6C7E8A;}
+			span.h_day{color:#ccc; font-size:.9em;}
+			.col-md-8.h_middle {margin-left: -1.5em;}
+
+		</style>
+	</head>
+
+	<body>
+		<div class="container-fluid main_cont">
+			<header>
+
+			</header>
+			<section>
+				<div class="row">
+				  <div class="col-md-12">
+				  	<h3 class="sandbox_title">GitHub user's favourite programming language.</h3>
+				  </div>
+				</div>
+				<div class="row">
+				  <div class="col-md-12">
+				  	<form role="form" action="javascript:void(0)" method="post" class="gform">
+					  <div class="form-group">
+					    <label for="guser">Username (Github)</label>
+					    <input type="text" class="form-control" id="guser" placeholder="Enter a Github Username">
+					  </div>
+
+					  <button type="submit" class="btn btn-default">Check</button>
+					</form>
+
+				  </div>
+				</div>
+
+				<div class="row">
+				  	<div class="col-md-12 feedback">
+				  	</div>
+				</div>
+
+				<div class="row exer_img">
+				  	<div class="col-md-12">
+				  		<div class="row">
+						  	<div class="col-md-2 h_img">
+						  		<img src="Tweet.gif" />
+						  	</div>
+						  	<div class="col-md-8 h_middle">
+						  		<span><strong>horse_js</strong></span><br><span class="h_body">as muchas i want to be, I am not</span><span class="h_at"> @horse_js</span>
+						  	</div>
+						  	<div class="col-md-2">
+						  		<span class="h_day">7 days</span>
+						  	</div>
+						</div>
+				  	</div>
+				</div>
+			</section>
+
+			<footer>
+			</footer>
+		</div>
+
+		<script>
+			$(function(){
+				$('form.gform').submit(function(){
+					$('.feedback').html("<p class=\"bg-info\">Please wait..</p>");
+					var guser = $('#guser').val();
+					var p_langs = [];
+					if(guser === null || guser === "" ){
+						$('.feedback').html("<p class=\"bg-danger\">You have not entered a Github username</p>");
+						return;
+					}else{
+						var guser_uri = "https://api.github.com/users/"+guser+"/repos";
+						$.getJSON(guser_uri, function(data){
+						    $.each(data, function (i, v) {
+						    	if(v.language !== null){
+						    		p_langs.push(v.language);
+						    		}
+						    });
+						   favorite_lang(p_langs);
+						}).fail(function(){
+							$('.feedback').html("<p class=\"bg-danger\">Sorry! we could not find that user</p>");
+						});
+					}
+
+				});
+
+				function favorite_lang(arr){
+				    var counts = {}, max = 0,
+				        result;
+				    for (var v in arr) {
+				        counts[arr[v]] = (counts[arr[v]] || 0) + 1;
+				        if (counts[arr[v]] > max) {
+				            max = counts[arr[v]];
+				            res = arr[v];
+				        }
+				    }
+				    $('.feedback').html("<p class=\"bg-success\">His/Her Favorite Language is<strong> "+ res +", </strong> it was used in " +counts[res]+ " Repository(s)</p>");
+				}
+			});
+		</script>
+	</body>
+</html>
